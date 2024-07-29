@@ -5,7 +5,7 @@ import "./globals.css";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "twitter-clone",
+  title: "Twitter",
   description: "twitter-clone",
 };
 

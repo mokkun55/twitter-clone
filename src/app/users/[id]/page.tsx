@@ -29,12 +29,17 @@ const Page = ({ params }: Props) => {
       const querySnapshot = await getDocs(q);
       if (querySnapshot.empty) {
         // TODO ユーザーがいないときの処理
+        console.log("ユーザーがいません");
         return;
       }
       if (querySnapshot.docs[0].data().userId === user?.uid) {
+        console.log("自分のアカウントです");
         setMyAccount(true);
         return;
       }
+      console.log(querySnapshot.docs[0].data().userId);
+      console.log(user);
+
       setUserProfile(querySnapshot.docs[0].data() as User);
     };
 

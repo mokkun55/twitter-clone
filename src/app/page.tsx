@@ -28,7 +28,7 @@ function Page() {
       <div className="text-blue-700 underline">
         <Link href="login">ログイン</Link>
         <br />
-        <Link href="signup">サインアップ</Link>
+        {!userProfile && <Link href="signup">サインアップ</Link>}
       </div>
 
       {user ? (
