@@ -31,18 +31,22 @@ function Page() {
         <Link href="signup">サインアップ</Link>
       </div>
 
-      <div>
-        <h1>ユーザー情報</h1>
-        {/* <Image
-          src={userProfile?.profileImg || ""}
-          width={100}
-          height={100}
-          alt=""
-        /> */}
-        <p>ユーザーID(自動): {user?.uid}</p>
-        <p>ユーザーID(任意): {userProfile?.userId}</p>
-        <p>ニックネーム: {userProfile?.nickName}</p>
-      </div>
+      {user ? (
+        <div>
+          <h1>ユーザー情報</h1>
+          <Image
+            src={userProfile?.profileImg || ""}
+            width={100}
+            height={100}
+            alt="hoge"
+          />
+          <p>ユーザーID(自動): {user?.uid}</p>
+          <p>ユーザーID(任意): {userProfile?.userId}</p>
+          <p>ニックネーム: {userProfile?.nickName}</p>
+        </div>
+      ) : (
+        <></>
+      )}
     </div>
   );
 }
