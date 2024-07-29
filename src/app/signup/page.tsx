@@ -31,14 +31,14 @@ const Page: React.FC = () => {
       // ユーザー情報取得
       const userDocRef = doc(db, "users", user.uid);
       getDoc(userDocRef).then((docSnap) => {
-        if (docSnap.exists()) {
-          router.back();
+        if (docSnap.data()?.userId) {
+          router.push("/");
         }
       });
     }
   }, [user, router]);
 
-  // ユーザー名重複チェック
+  // ユーザー名チェック
   const chageUserId = (userId: string) => {
     userId = userId.replace(/[^a-zA-Z0-9]/g, "");
     // console.log(userId);
