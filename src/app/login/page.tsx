@@ -13,7 +13,7 @@ import { User } from "../Types/User";
 function Page() {
   const router = useRouter();
 
-  const [user, loading] = useAuthState(auth);
+  const [user] = useAuthState(auth);
   const googleProvider = new GoogleAuthProvider();
 
   const loginWithGoogle = async () => {
@@ -47,7 +47,7 @@ function Page() {
   const signout = () => {
     signOut(auth);
   };
-  
+
   return (
     <div className="text-center flex flex-col justify-center items-center h-[90vh]">
       <h1 className="text-3xl font-bold">ログインページ</h1>

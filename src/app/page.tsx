@@ -1,28 +1,20 @@
 "use client";
 
-import { collection, doc, getDoc } from "firebase/firestore";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
-import { auth, db } from "../../firebase";
-import { useAuthState } from "react-firebase-hooks/auth";
-import { User } from "./Types/User";
 import Image from "next/image";
+import { useAuthState } from "react-firebase-hooks/auth";
+import { auth } from "../../firebase";
+import useLoginUser from "@/hooks/useLoginUser";
 
 function Page() {
   const [user] = useAuthState(auth);
-  const [userProfile, setUserProfile] = useState<User | null>(null);
+  const { userProfile, getUserProfile } = useLoginUser();
 
   useEffect(() => {
-    if (!user) return;
     // データ取得
-    const getUserProfile = async () => {
-      const profileRef = doc(db, "users", user.uid);
-      const profileSnap = await getDoc(profileRef);
-      setUserProfile(profileSnap.data() as User);
-    };
-
     getUserProfile();
-  }, [user]);
+  }, [getUserProfile, user]);
   return (
     <div>
       <div className="text-blue-700 underline">
