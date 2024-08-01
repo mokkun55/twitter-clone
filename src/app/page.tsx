@@ -7,10 +7,13 @@ import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "../../firebase";
 import useLoginUser from "@/hooks/useLoginUser";
 import { CircularProgress } from "@mui/material";
+import Sidebar from "./components/Sidebar";
+import TimeLine from "./components/TimeLine";
 
 function Page() {
   const [user, loading] = useAuthState(auth);
   const { userProfile, getUserProfile } = useLoginUser();
+  const [isTweet, setIsTweet] = useState<boolean>(false);
 
   useEffect(() => {
     // データ取得
@@ -27,32 +30,14 @@ function Page() {
   }
 
   return (
-    <>
-      <div>
-        <div className="text-blue-700 underline">
-          <Link href="login">ログイン</Link>
-          <br />
-          {!userProfile && <Link href="signup">サインアップ</Link>}
-        </div>
-
-        {user ? (
-          <div>
-            <h1>ユーザー情報</h1>
-            <Image
-              src={userProfile?.profileImg || ""}
-              width={100}
-              height={100}
-              alt="hoge"
-            />
-            <p>ユーザーID(自動): {user?.uid}</p>
-            <p>ユーザーID(任意): {userProfile?.userId}</p>
-            <p>ニックネーム: {userProfile?.nickName}</p>
-          </div>
-        ) : (
-          <></>
-        )}
-      </div>
-    </>
+    <div className="flex bg-slate-300 justify-center">
+      <Sidebar
+        userProfile={userProfile}
+        isTweet={isTweet}
+        setIsTweet={setIsTweet}
+      />
+      <TimeLine userProfile={userProfile} />
+    </div>
   );
 }
 
