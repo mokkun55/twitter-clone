@@ -7,8 +7,6 @@ import { auth, db } from "../../firebase";
 import { useAuthState } from "react-firebase-hooks/auth";
 
 const useLoginUser = () => {
-  console.log("useLoginUser");
-
   const [userProfile, setUserProfile] = useState<User | null>(null);
   const [user] = useAuthState(auth);
 

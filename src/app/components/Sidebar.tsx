@@ -3,7 +3,7 @@
 import React, { FC } from "react";
 import HomeIcon from "@mui/icons-material/Home";
 import PersonIcon from "@mui/icons-material/Person";
-import SettingsIcon from "@mui/icons-material/Settings";
+import LogoutIcon from "@mui/icons-material/Logout";
 import { useRouter } from "next/navigation";
 import { User } from "../Types/User";
 import { Edit } from "@mui/icons-material";
@@ -18,7 +18,7 @@ type Props = {
 const Sidebar: FC<Props> = ({ userProfile, isTweet, setIsTweet }) => {
   const router = useRouter();
   return (
-    <div className="bg-blue-300 h-screen w-[10%] flex flex-col items-center">
+    <div className="h-screen w-[10%] flex flex-col items-center justify-between sticky top-0">
       <ul className="flex flex-col *:m-1 *:p-2">
         <li>
           <button onClick={() => router.push("/")}>
@@ -34,7 +34,7 @@ const Sidebar: FC<Props> = ({ userProfile, isTweet, setIsTweet }) => {
         </li>
         <li>
           <button onClick={() => router.push("/login")}>
-            <SettingsIcon className="text-[50px] p-2 rounded-full hover:bg-gray-400/20" />
+            <LogoutIcon className="text-[50px] p-2 rounded-full hover:bg-gray-400/20" />
             <p className="hidden">Setting</p>
           </button>
         </li>
@@ -49,7 +49,7 @@ const Sidebar: FC<Props> = ({ userProfile, isTweet, setIsTweet }) => {
         </li>
       </ul>
 
-      <div className="">
+      <div className="mb-4">
         <Image
           src={userProfile.profileImg}
           alt="profile"

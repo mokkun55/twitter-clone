@@ -1,14 +1,13 @@
 "use client";
 
-import Link from "next/link";
 import React, { useEffect, useState } from "react";
-import Image from "next/image";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "../../firebase";
 import useLoginUser from "@/hooks/useLoginUser";
 import { CircularProgress } from "@mui/material";
 import Sidebar from "./components/Sidebar";
 import TimeLine from "./components/TimeLine";
+import TweetInput from "./components/TweetInput";
 
 function Page() {
   const [user, loading] = useAuthState(auth);
@@ -31,14 +30,24 @@ function Page() {
   }
 
   return (
-    <div className="flex bg-slate-300 justify-center">
-      <Sidebar
+    <>
+      {/* inputモーダル */}
+      <TweetInput
+        isOpen={isTweet}
+        setIsOpen={setIsTweet}
         userProfile={userProfile}
-        isTweet={isTweet}
-        setIsTweet={setIsTweet}
       />
-      <TimeLine userProfile={userProfile} />
-    </div>
+
+      <div className="flex justify-center ">
+        <Sidebar
+          userProfile={userProfile}
+          isTweet={isTweet}
+          setIsTweet={setIsTweet}
+        />
+        <TimeLine />
+        <div className="w-[10%]"></div>
+      </div>
+    </>
   );
 }
 
