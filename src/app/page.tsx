@@ -18,7 +18,8 @@ function Page() {
   useEffect(() => {
     // データ取得
     getUserProfile();
-  }, [getUserProfile, user]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user]);
 
   if (!userProfile || loading) {
     return (
