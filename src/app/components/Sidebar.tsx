@@ -23,27 +23,27 @@ const Sidebar: FC<Props> = ({ userProfile, isTweet, setIsTweet }) => {
         <li>
           <button
             onClick={() => router.push("/")}
-            className="flex items-center"
+            className="flex items-center rounded-full hover:bg-gray-400/20 px-2"
           >
-            <HomeIcon className="text-[50px] p-2 rounded-full hover:bg-gray-400/20" />
+            <HomeIcon className="text-[50px] p-2" />
             <p className="hidden lg:block">Home</p>
           </button>
         </li>
         <li>
           <button
             onClick={() => router.push(`/users/${userProfile.userId}`)}
-            className="flex items-center"
+            className="flex items-center rounded-full hover:bg-gray-400/20 px-2"
           >
-            <PersonIcon className="text-[50px] p-2 rounded-full hover:bg-gray-400/20" />
+            <PersonIcon className="text-[50px] p-2" />
             <p className="hidden lg:block">Profile</p>
           </button>
         </li>
         <li>
           <button
             onClick={() => router.push("/login")}
-            className="flex items-center"
+            className="flex items-center rounded-full hover:bg-gray-400/20 px-2"
           >
-            <LogoutIcon className="text-[50px] p-2 rounded-full hover:bg-gray-400/20" />
+            <LogoutIcon className="text-[50px] p-2" />
             <p className="hidden lg:block">Logout</p>
           </button>
         </li>
