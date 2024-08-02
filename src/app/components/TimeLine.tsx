@@ -85,7 +85,7 @@ const TimeLine: FC<Props> = ({ userProfile }) => {
   // ---アイコンたち---
 
   // リプライ
-  const clickReply = (index: number, postId: string) => {
+  const clickReply = (index: number) => {
     setReplyTweet(tweets[index]);
     setIsReplyOpen(true);
   };
@@ -97,7 +97,9 @@ const TimeLine: FC<Props> = ({ userProfile }) => {
   };
 
   const sendReply = async () => {
-    const replyRef = collection(db, "posts", "3cvc1hL8oJL1gPhllOIu", "reply");
+    // TODO IDの取得方法
+    if (!replyTweet) return;
+    const replyRef = collection(db, "posts", replyTweet.id, "reply");
     const sendReplyData: Post = {
       id: "", // TODO: どうかする
       userId: userProfile.userId,
@@ -232,7 +234,7 @@ const TimeLine: FC<Props> = ({ userProfile }) => {
           <div className="text-gray-500 pl-[45px] w-full flex items-center *:transition *:duration-300 justify-between">
             <button
               className="hover:text-blue-500 hover:bg-blue-100 p-2 rounded-full"
-              onClick={() => clickReply(index, post.id)}
+              onClick={() => clickReply(index)}
             >
               <ChatBubbleOutlineIcon />
             </button>
