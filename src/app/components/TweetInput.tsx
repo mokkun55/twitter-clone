@@ -20,6 +20,7 @@ const TweetInput: FC<Props> = ({ isOpen, setIsOpen, userProfile }) => {
     const sendPost = async () => {
       const postRef = collection(db, "posts");
       const sendPostData: Post = {
+        id: "", // TODO: どうかする
         userId: userProfile.userId,
         userProfileImg: userProfile.profileImg,
         useNickname: userProfile.nickName,

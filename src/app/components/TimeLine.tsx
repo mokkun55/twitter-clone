@@ -24,7 +24,7 @@ const TimeLine: FC<Props> = () => {
 
   const getAllTweets = () => {
     const Ref = collection(db, "posts");
-    const q = query(Ref, orderBy("createdAt", "desc"), limit(10));
+    const q = query(Ref, orderBy("createdAt", "desc"), limit(20));
     onSnapshot(q, (snapshot) => {
       setTweets(
         snapshot.docs.map((doc) => {
