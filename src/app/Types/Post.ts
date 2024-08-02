@@ -1,6 +1,7 @@
 import { Like } from "./Like";
 
 export type Post = {
+  id: string;
   userId: string;
   userProfileImg: string;
   useNickname: string;
