@@ -1,7 +1,14 @@
 import React, { FC, useEffect, useState } from "react";
 import Image from "next/image";
 import TLHeader from "./TLHeader";
-import { collection, onSnapshot, orderBy, query } from "firebase/firestore";
+import {
+  collection,
+  limit,
+  onSnapshot,
+  orderBy,
+  query,
+  startAfter,
+} from "firebase/firestore";
 import { db } from "../../../firebase";
 import { Post } from "../Types/Post";
 
@@ -15,9 +22,9 @@ const TimeLine: FC<Props> = () => {
   // ツイート取得 全員のツイートを取得
   // TODO フォローしているユーザーのツイートを取得
 
-  const getAllTweets = async () => {
+  const getAllTweets = () => {
     const Ref = collection(db, "posts");
-    const q = query(Ref, orderBy("createdAt", "desc"));
+    const q = query(Ref, orderBy("createdAt", "desc"), limit(10));
     onSnapshot(q, (snapshot) => {
       setTweets(
         snapshot.docs.map((doc) => {
@@ -29,9 +36,31 @@ const TimeLine: FC<Props> = () => {
     });
   };
 
+  // 次の10件を取得
+  const loadNextPosts = () => {
+    const lastPost = tweets[tweets.length - 1];
+    const Ref = collection(db, "posts");
+    const q = query(
+      Ref,
+      orderBy("createdAt", "desc"),
+      startAfter(lastPost.createdAt),
+      limit(10)
+    );
+    onSnapshot(q, (snapshot) => {
+      setTweets((prevTweets) => [
+        ...prevTweets,
+        ...snapshot.docs.map((doc) => {
+          const data = doc.data() as Post;
+          const id = doc.id;
+          return { ...data, id };
+        }),
+      ]);
+    });
+  };
+
   useEffect(() => {
     getAllTweets();
-  });
+  }, []);
 
   return (
     <div className="w-[70%] border-x ">
@@ -60,6 +89,13 @@ const TimeLine: FC<Props> = () => {
           </div>
         </div>
       ))}
+
+      <button
+        className="hover:bg-slate-50 border w-full p-4 text-blue-500 text-center"
+        onClick={loadNextPosts}
+      >
+        もっと見る (次の10件)
+      </button>
     </div>
   );
 };
