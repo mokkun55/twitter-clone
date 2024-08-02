@@ -11,6 +11,13 @@ import {
 } from "firebase/firestore";
 import { db } from "../../../firebase";
 import { Post } from "../Types/Post";
+import { useRouter } from "next/navigation";
+import ChatBubbleOutlineIcon from "@mui/icons-material/ChatBubbleOutline";
+import RepeatIcon from "@mui/icons-material/Repeat";
+import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
+import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
+import IosShareIcon from "@mui/icons-material/IosShare";
+import { Chat } from "@mui/icons-material";
 
 type Props = {};
 
@@ -18,6 +25,8 @@ const TimeLine: FC<Props> = () => {
   // home ↔ all
   const [TLMode, setTLMode] = useState<string>("home");
   const [tweets, setTweets] = useState<Array<Post>>([]);
+
+  const router = useRouter();
 
   // ツイート取得 全員のツイートを取得
   // TODO フォローしているユーザーのツイートを取得
@@ -67,6 +76,7 @@ const TimeLine: FC<Props> = () => {
       <TLHeader TLMode={TLMode} setTLMode={setTLMode} />
 
       {tweets.map((post) => (
+        // TODO 詳細ページへのリンク
         <div className="hover:bg-slate-50 border w-full p-4" key={post.id}>
           <div className="flex items-start">
             <Image
@@ -74,18 +84,50 @@ const TimeLine: FC<Props> = () => {
               alt="profile"
               width={50}
               height={50}
-              className="rounded-full w-[50px] h-[50px]"
+              className="rounded-full w-[50px] h-[50px] cursor-pointer hover:opacity-80"
+              onClick={() => router.push(`/users/${post.userId}`)}
             />
 
             <div className="flex mt-1 ml-2">
-              <p className="font-bold">{post.useNickname}</p>
+              <p
+                className="font-bold hover:underline cursor-pointer"
+                onClick={() => router.push(`/users/${post.userId}`)}
+              >
+                {post.useNickname}
+              </p>
               {/* TODO 日付 */}
-              <p className="text-gray-500">@{post.userId}・日付</p>
+              <p className="text-gray-500 ml-1">@{post.userId}・日付</p>
             </div>
           </div>
 
-          <div className="ml-[55px] mt-[-20px]">
+          {/* 本文 */}
+          <div className="pl-[55px] mt-[-20px]">
             <p>{post.postText}</p>
+          </div>
+
+          {/* アイコンたち */}
+          <div className="text-gray-500 pl-[45px] w-full flex items-center *:transition *:duration-300 justify-between">
+            <button className="hover:text-blue-500 hover:bg-blue-100 p-2 rounded-full">
+              <ChatBubbleOutlineIcon />
+            </button>
+
+            <button className="hover:text-green-500 hover:bg-green-100 p-2 rounded-full">
+              <RepeatIcon />
+            </button>
+
+            <button className="hover:text-red-500 hover:bg-red-100 p-2 rounded-full">
+              <FavoriteBorderIcon />
+            </button>
+
+            <div className="*:transition *:duration-300">
+              <button className="hover:text-blue-500 hover:bg-blue-100 p-2 rounded-full">
+                <BookmarkBorderIcon />
+              </button>
+
+              <button className="hover:text-blue-500 hover:bg-blue-100 p-2 rounded-full">
+                <IosShareIcon />
+              </button>
+            </div>
           </div>
         </div>
       ))}

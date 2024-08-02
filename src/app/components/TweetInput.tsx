@@ -14,6 +14,7 @@ type Props = {
 };
 
 const TweetInput: FC<Props> = ({ isOpen, setIsOpen, userProfile }) => {
+  // TODO 最初からカーソル当てる
   const [postText, setPostText] = useState<string>("");
 
   const clickSendTweet = () => {
