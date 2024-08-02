@@ -1,5 +1,4 @@
 import React, { FC, useEffect, useState } from "react";
-import { User } from "../Types/User";
 import Image from "next/image";
 import TLHeader from "./TLHeader";
 import { collection, onSnapshot, orderBy, query } from "firebase/firestore";
@@ -13,48 +12,26 @@ const TimeLine: FC<Props> = () => {
   const [TLMode, setTLMode] = useState<string>("home");
   const [tweets, setTweets] = useState<Array<Post>>([]);
 
+  // ツイート取得 全員のツイートを取得
+  // TODO フォローしているユーザーのツイートを取得
+
+  const getAllTweets = async () => {
+    const Ref = collection(db, "posts");
+    const q = query(Ref, orderBy("createdAt", "desc"));
+    onSnapshot(q, (snapshot) => {
+      setTweets(
+        snapshot.docs.map((doc) => {
+          const data = doc.data() as Post;
+          const id = doc.id;
+          return { ...data, id };
+        })
+      );
+    });
+  };
+
   useEffect(() => {
-    // ツイート取得 全員のツイートを取得
-    const getAllTweets = async () => {
-      const Ref = collection(db, "posts");
-      const q = query(Ref, orderBy("createdAt", "desc"));
-      onSnapshot(q, (snapshot) => {
-        setTweets(
-          snapshot.docs.map((doc) => {
-            const data = doc.data() as Post;
-            const id = doc.id;
-            return { ...data, id };
-          })
-        );
-      });
-    };
-
-    // TODO フォローしているユーザーのツイートを取得
-    const getFollowTweets = async () => {
-      const Ref = collection(db, "posts");
-      const q = query(Ref, orderBy("createdAt", "desc"));
-      onSnapshot(q, (snapshot) => {
-        setTweets(
-          snapshot.docs.map((doc) => {
-            const data = doc.data() as Post;
-            const id = doc.id;
-            return { ...data, id };
-          })
-        );
-      });
-    };
-
-    switch (TLMode) {
-      case "home":
-        getAllTweets();
-        break;
-      case "all":
-        getFollowTweets();
-        break;
-      default:
-        break;
-    }
-  }, []);
+    getAllTweets();
+  });
 
   return (
     <div className="w-[70%] border-x ">
