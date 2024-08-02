@@ -17,7 +17,7 @@ import RepeatIcon from "@mui/icons-material/Repeat";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
 import IosShareIcon from "@mui/icons-material/IosShare";
-import { Chat } from "@mui/icons-material";
+import Link from "next/link";
 
 type Props = {};
 
@@ -79,22 +79,20 @@ const TimeLine: FC<Props> = () => {
         // TODO 詳細ページへのリンク
         <div className="hover:bg-slate-50 border w-full p-4" key={post.id}>
           <div className="flex items-start">
-            <Image
-              src={post.userProfileImg}
-              alt="profile"
-              width={50}
-              height={50}
-              className="rounded-full w-[50px] h-[50px] cursor-pointer hover:opacity-80"
-              onClick={() => router.push(`/users/${post.userId}`)}
-            />
+            <Link href={`/users/${post.userId}`}>
+              <Image
+                src={post.userProfileImg}
+                alt="profile"
+                width={50}
+                height={50}
+                className="rounded-full w-[50px] h-[50px] hover:opacity-80"
+              />
+            </Link>
 
             <div className="flex mt-1 ml-2">
-              <p
-                className="font-bold hover:underline cursor-pointer"
-                onClick={() => router.push(`/users/${post.userId}`)}
-              >
-                {post.useNickname}
-              </p>
+              <Link href={`/users/${post.userId}`}>
+                <p className="font-bold hover:underline">{post.useNickname}</p>
+              </Link>
               {/* TODO 日付 */}
               <p className="text-gray-500 ml-1">@{post.userId}・日付</p>
             </div>
