@@ -41,12 +41,13 @@ const TweetInput: FC<Props> = ({ isOpen, setIsOpen, userProfile }) => {
   return (
     <Modal
       open={isOpen}
-      onClose={() => setIsOpen(false)}
-      aria-labelledby="modal-modal-title"
-      aria-describedby="modal-modal-description"
-      className="flex  justify-center m-16"
+      onClose={() => {
+        setIsOpen(false);
+        setPostText("");
+      }}
+      className="flex justify-center m-16"
     >
-      <div className="h-[300px] w-[600px] bg-white rounded-3xl p-2">
+      <div className="h-fit w-[600px] bg-white rounded-3xl p-2">
         {/* 上の方 */}
         <div>
           <button
@@ -66,17 +67,16 @@ const TweetInput: FC<Props> = ({ isOpen, setIsOpen, userProfile }) => {
             height={50}
             className="rounded-full w-[50px] h-[50px] mr-2"
           />
-          <div className=" my-4 w-full h-[180px]">
-            <p className="text-gray-600">@{userProfile.userId}</p>
+          <div className="mt-3 w-full h-fit ">
             <textarea
-              className="resize-none outline-none text-xl w-full h-[150px] p-2"
+              className="resize-none outline-none w-full text-lg"
               placeholder="いまどうしてる？"
               onChange={(e) => setPostText(e.target.value)}
               value={postText}
             ></textarea>
             <div className="flex">
               <button
-                className="bg-blue-500 text-white py-2 px-4 rounded-full w-fit ml-auto"
+                className="bg-blue-500 text-white py-2 px-4 rounded-full ml-auto"
                 onClick={clickSendTweet}
               >
                 ツイートする

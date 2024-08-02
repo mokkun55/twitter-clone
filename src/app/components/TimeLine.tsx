@@ -17,16 +17,26 @@ import RepeatIcon from "@mui/icons-material/Repeat";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
 import IosShareIcon from "@mui/icons-material/IosShare";
+import CloseIcon from "@mui/icons-material/Close";
 import Link from "next/link";
+import { Modal } from "@mui/material";
+import { User } from "../Types/User";
 
-type Props = {};
+type Props = {
+  userProfile: User;
+};
 
-const TimeLine: FC<Props> = () => {
+const TimeLine: FC<Props> = ({ userProfile }) => {
+  const router = useRouter();
+
   // home ↔ all
   const [TLMode, setTLMode] = useState<string>("home");
   const [tweets, setTweets] = useState<Array<Post>>([]);
 
-  const router = useRouter();
+  // リプライ
+  const [isReplyOpen, setIsReplyOpen] = useState<boolean>(false);
+  const [replyTweet, setReplyTweet] = useState<Post>();
+  const [replyText, setReplyText] = useState<string>("");
 
   // ツイート取得 全員のツイートを取得
   // TODO フォローしているユーザーのツイートを取得
@@ -71,11 +81,103 @@ const TimeLine: FC<Props> = () => {
     getAllTweets();
   }, []);
 
+  // ---アイコンたち---
+
+  // リプライ
+  const clickReply = (index: number, postId: string) => {
+    setReplyTweet(tweets[index]);
+    setIsReplyOpen(true);
+  };
+
+  // リツイート
+  const clickRetweet = () => {};
+
+  // いいね
+  const clickLike = () => {};
+
+  // ブックマーク
+  const clickBookmark = () => {};
+
+  // シェア
+  const clickShare = () => {};
+
   return (
     <div className="w-[70%] border-x ">
       <TLHeader TLMode={TLMode} setTLMode={setTLMode} />
 
-      {tweets.map((post) => (
+      {/* リプライモーダル */}
+      <Modal
+        open={isReplyOpen}
+        onClose={() => setIsReplyOpen(false)}
+        className="flex justify-center m-16 h-fit"
+      >
+        <div className="h-fit w-[600px] bg-white rounded-3xl p-2">
+          <div>
+            <button
+              className="hover:bg-gray-100 p-2 rounded-full"
+              onClick={() => setIsReplyOpen(false)}
+            >
+              <CloseIcon />
+            </button>
+          </div>
+
+          <div className="flex mx-2">
+            <div className=" my-4 w-full">
+              {/* リプライ先 */}
+              <div className="flex flex-col">
+                <div className="flex">
+                  <Image
+                    src={replyTweet?.userProfileImg ?? ""}
+                    alt="profile"
+                    width={50}
+                    height={50}
+                    className="rounded-full w-[40px] h-[40px] mr-2"
+                  />
+                  <p className="font-bold">{replyTweet?.useNickname}</p>
+                  <p className="text-gray-500 ml-1">
+                    @{replyTweet?.userId}・日付
+                    {/* TODO 日付 */}
+                  </p>
+                </div>
+                <p className="ml-[50px] mt-[-15px] text-sm">
+                  {replyTweet?.postText}
+                </p>
+              </div>
+
+              {/* 返信欄 */}
+              <div className="mt-4">
+                <div className="flex">
+                  <Image
+                    src={userProfile.profileImg ?? ""}
+                    alt="profile"
+                    width={50}
+                    height={50}
+                    className="rounded-full w-[40px] h-[40px] mr-2"
+                  />
+                  <textarea
+                    className="resize-none outline-none w-full p-2 "
+                    placeholder="返信を追加"
+                    onChange={(e) => {
+                      setReplyText(e.target.value);
+                    }}
+                    value={replyText}
+                  ></textarea>
+                </div>
+              </div>
+              <div className="flex">
+                <button
+                  className="bg-blue-500 text-white py-2 px-4 rounded-full ml-auto"
+                  // onClick={}
+                >
+                  ツイートする
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </Modal>
+
+      {tweets.map((post, index) => (
         // TODO 詳細ページへのリンク
         <div className="hover:bg-slate-50 border w-full p-4" key={post.id}>
           <div className="flex items-start">
@@ -105,31 +207,45 @@ const TimeLine: FC<Props> = () => {
 
           {/* アイコンたち */}
           <div className="text-gray-500 pl-[45px] w-full flex items-center *:transition *:duration-300 justify-between">
-            <button className="hover:text-blue-500 hover:bg-blue-100 p-2 rounded-full">
+            <button
+              className="hover:text-blue-500 hover:bg-blue-100 p-2 rounded-full"
+              onClick={() => clickReply(index, post.id)}
+            >
               <ChatBubbleOutlineIcon />
             </button>
 
-            <button className="hover:text-green-500 hover:bg-green-100 p-2 rounded-full">
+            <button
+              className="hover:text-green-500 hover:bg-green-100 p-2 rounded-full"
+              onClick={clickRetweet}
+            >
               <RepeatIcon />
             </button>
 
-            <button className="hover:text-red-500 hover:bg-red-100 p-2 rounded-full">
+            <button
+              className="hover:text-red-500 hover:bg-red-100 p-2 rounded-full"
+              onClick={clickLike}
+            >
               <FavoriteBorderIcon />
             </button>
 
             <div className="*:transition *:duration-300">
-              <button className="hover:text-blue-500 hover:bg-blue-100 p-2 rounded-full">
+              <button
+                className="hover:text-blue-500 hover:bg-blue-100 p-2 rounded-full"
+                onClick={clickBookmark}
+              >
                 <BookmarkBorderIcon />
               </button>
 
-              <button className="hover:text-blue-500 hover:bg-blue-100 p-2 rounded-full">
+              <button
+                className="hover:text-blue-500 hover:bg-blue-100 p-2 rounded-full"
+                onClick={clickShare}
+              >
                 <IosShareIcon />
               </button>
             </div>
           </div>
         </div>
       ))}
-
       <button
         className="hover:bg-slate-50 border w-full p-4 text-blue-500 text-center"
         onClick={loadNextPosts}

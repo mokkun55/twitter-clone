@@ -44,7 +44,7 @@ function Page() {
           isTweet={isTweet}
           setIsTweet={setIsTweet}
         />
-        <TimeLine />
+        <TimeLine userProfile={userProfile} />
         <div className="w-[10%] lg:w-[40%]"></div>
       </div>
     </>
