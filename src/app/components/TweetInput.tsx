@@ -3,6 +3,9 @@ import React, { FC, useState } from "react";
 import CloseIcon from "@mui/icons-material/Close";
 import Image from "next/image";
 import { User } from "../Types/User";
+import { addDoc, collection } from "firebase/firestore";
+import { db } from "../../../firebase";
+import { Post } from "../Types/Post";
 
 type Props = {
   isOpen: boolean;
@@ -14,13 +17,23 @@ const TweetInput: FC<Props> = ({ isOpen, setIsOpen, userProfile }) => {
   const [postText, setPostText] = useState<string>("");
 
   const clickSendTweet = () => {
-    setIsOpen(false);
-    setPostText("");
-
-    // TODO 送信処理
-    const sendPost = async () => {};
+    const sendPost = async () => {
+      const postRef = collection(db, "posts");
+      const sendPostData: Post = {
+        userId: userProfile.userId,
+        userProfileImg: userProfile.profileImg,
+        useNickname: userProfile.nickName,
+        postText: postText,
+        // TODO: 画像投稿機能
+        createdAt: new Date(),
+        // TODO: いいね機能
+      };
+      await addDoc(postRef, sendPostData);
+    };
 
     sendPost();
+    setIsOpen(false);
+    setPostText("");
   };
 
   return (
