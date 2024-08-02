@@ -9,4 +9,5 @@ export type Post = {
   image?: string;
   createdAt: Date;
   // Likes?: Array<Like>;
+  reply?: Array<Post>;
 };

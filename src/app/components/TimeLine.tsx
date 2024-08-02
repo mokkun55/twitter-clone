@@ -2,6 +2,7 @@ import React, { FC, useEffect, useState } from "react";
 import Image from "next/image";
 import TLHeader from "./TLHeader";
 import {
+  addDoc,
   collection,
   limit,
   onSnapshot,
@@ -89,6 +90,28 @@ const TimeLine: FC<Props> = ({ userProfile }) => {
     setIsReplyOpen(true);
   };
 
+  const clickSendReply = () => {
+    sendReply();
+    setIsReplyOpen(false);
+    setReplyText("");
+  };
+
+  const sendReply = async () => {
+    const replyRef = collection(db, "posts", "3cvc1hL8oJL1gPhllOIu", "reply");
+    const sendReplyData: Post = {
+      id: "", // TODO: どうかする
+      userId: userProfile.userId,
+      userProfileImg: userProfile.profileImg,
+      useNickname: userProfile.nickName,
+      postText: replyText,
+      // TODO: 画像投稿機能
+      createdAt: new Date(),
+      // TODO: いいね機能
+    };
+    await addDoc(replyRef, sendReplyData);
+    console.log("リプライしました");
+  };
+
   // リツイート
   const clickRetweet = () => {};
 
@@ -167,7 +190,7 @@ const TimeLine: FC<Props> = ({ userProfile }) => {
               <div className="flex">
                 <button
                   className="bg-blue-500 text-white py-2 px-4 rounded-full ml-auto"
-                  // onClick={}
+                  onClick={clickSendReply}
                 >
                   ツイートする
                 </button>
