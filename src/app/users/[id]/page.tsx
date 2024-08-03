@@ -14,6 +14,7 @@ import { useRecoilValue } from "recoil";
 import { loginUserProfile } from "@/app/globalState";
 import dayjs from "dayjs";
 import "dayjs/locale/ja";
+import Link from "next/link";
 dayjs.locale("ja");
 
 type Props = {
@@ -29,9 +30,9 @@ const Page = ({ params }: Props) => {
   const [fetchedUserProfile, setFetchedUserProfile] = useState<User | null>(
     null
   );
-  const [myAccount, setMyAccount] = useState<boolean>(false);
   const [isTweet, setIsTweet] = useState<boolean>(true);
   const userProfile = useRecoilValue(loginUserProfile);
+  const [userNotFound, setUserNotFound] = useState<boolean>(false);
 
   useEffect(() => {
     // ユーザープロフィール取得
@@ -41,23 +42,33 @@ const Page = ({ params }: Props) => {
       const querySnapshot = await getDocs(q);
       if (querySnapshot.empty) {
         // TODO ユーザーがいないときの処理
-        console.log("ユーザーがいません");
-        return;
-      }
-      // TODO ここ改良の余地ある
-      if (querySnapshot.docs[0].data().userId === user?.uid) {
-        console.log("自分のアカウントです");
-        setMyAccount(true);
+        console.log("ユーザーが存在しません");
+        setUserNotFound(true);
         return;
       }
       console.log(querySnapshot.docs[0].data().userId);
-      console.log(user);
 
       setFetchedUserProfile(querySnapshot.docs[0].data() as User);
     };
 
     getUserProfile();
   }, [userId, user]);
+
+  if (userNotFound) {
+    return (
+      <div className="text-center flex flex-col h-[90vh] justify-center items-center">
+        <p className="text-xl mb-8 font-bold">
+          @{userId} は存在しないユーザーです。
+        </p>
+        <Link
+          href={"/"}
+          className="text-xl rounded bg-blue-500 px-4 py-2 text-white"
+        >
+          ホームへ戻る
+        </Link>
+      </div>
+    );
+  }
 
   if (!fetchedUserProfile) {
     return (
