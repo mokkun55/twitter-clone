@@ -1,24 +1,28 @@
 import { Modal } from "@mui/material";
-import React, { FC, useState } from "react";
+import React, { FC, use, useState } from "react";
 import CloseIcon from "@mui/icons-material/Close";
 import Image from "next/image";
 import { User } from "../Types/User";
 import { addDoc, collection } from "firebase/firestore";
 import { db } from "../../../firebase";
 import { Post } from "../Types/Post";
+import { loginUserProfile } from "../globalState";
+import { useRecoilValue } from "recoil";
 
 type Props = {
   isOpen: boolean;
   setIsOpen: (isOpen: boolean) => void;
-  userProfile: User;
 };
 
-const TweetInput: FC<Props> = ({ isOpen, setIsOpen, userProfile }) => {
+const TweetInput: FC<Props> = ({ isOpen, setIsOpen }) => {
+  const userProfile = useRecoilValue(loginUserProfile);
+
   // TODO 最初からカーソル当てる
   const [postText, setPostText] = useState<string>("");
 
   const clickSendTweet = () => {
     const sendPost = async () => {
+      if (!userProfile) return;
       const postRef = collection(db, "posts");
       const sendPostData: Post = {
         id: "", // TODO: どうかする

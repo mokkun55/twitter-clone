@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useState } from "react";
+import React, { FC, use, useEffect, useState } from "react";
 import Image from "next/image";
 import TLHeader from "./TLHeader";
 import {
@@ -13,22 +13,22 @@ import {
 import { db } from "../../../firebase";
 import { Post } from "../Types/Post";
 import { useRouter } from "next/navigation";
+import CloseIcon from "@mui/icons-material/Close";
 import ChatBubbleOutlineIcon from "@mui/icons-material/ChatBubbleOutline";
 import RepeatIcon from "@mui/icons-material/Repeat";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
 import IosShareIcon from "@mui/icons-material/IosShare";
-import CloseIcon from "@mui/icons-material/Close";
 import Link from "next/link";
 import { Modal } from "@mui/material";
-import { User } from "../Types/User";
+import { useRecoilValue } from "recoil";
+import { loginUserProfile } from "../globalState";
+import ReplyButtn from "./buttons/ReplyButtn";
 
-type Props = {
-  userProfile: User;
-};
-
-const TimeLine: FC<Props> = ({ userProfile }) => {
+const TimeLine: FC = () => {
   const router = useRouter();
+
+  const userProfile = useRecoilValue(loginUserProfile);
 
   // home ↔ all
   const [TLMode, setTLMode] = useState<string>("home");
@@ -99,6 +99,7 @@ const TimeLine: FC<Props> = ({ userProfile }) => {
   const sendReply = async () => {
     // TODO IDの取得方法
     if (!replyTweet) return;
+    if (!userProfile) return;
     const replyRef = collection(db, "posts", replyTweet.id, "reply");
     const sendReplyData: Post = {
       id: "", // TODO: どうかする
@@ -127,9 +128,8 @@ const TimeLine: FC<Props> = ({ userProfile }) => {
   const clickShare = () => {};
 
   return (
-    <div className="w-[70%] border-x ">
+    <div className="w-[70%] border-x">
       <TLHeader TLMode={TLMode} setTLMode={setTLMode} />
-
       {/* リプライモーダル */}
       <Modal
         open={isReplyOpen}
@@ -173,7 +173,7 @@ const TimeLine: FC<Props> = ({ userProfile }) => {
               <div className="mt-4">
                 <div className="flex">
                   <Image
-                    src={userProfile.profileImg ?? ""}
+                    src={userProfile?.profileImg ?? ""}
                     alt="profile"
                     width={50}
                     height={50}
@@ -204,22 +204,37 @@ const TimeLine: FC<Props> = ({ userProfile }) => {
 
       {tweets.map((post, index) => (
         // TODO 詳細ページへのリンク
-        <div className="hover:bg-slate-50 border w-full p-4" key={post.id}>
+        <div
+          className="hover:bg-slate-50 border w-full p-4"
+          key={post.id}
+          onClick={() => router.push(`/posts/${post.id}`)}
+        >
           <div className="flex items-start">
             <Link href={`/users/${post.userId}`}>
               <Image
-                src={post.userProfileImg}
+                src={post.userProfileImg || "/noImg.jpg"}
                 alt="profile"
                 width={50}
                 height={50}
-                className="rounded-full w-[50px] h-[50px] hover:opacity-80"
+                // TODO hover時にカーソルをpointerにならない!!!!!!!!!!!!
+                className="rounded-full w-[50px] h-[50px] hover:opacity-80 hover:cursor-pointer"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  router.push(`/users/${post.userId}`);
+                }}
               />
             </Link>
 
             <div className="flex mt-1 ml-2">
-              <Link href={`/users/${post.userId}`}>
-                <p className="font-bold hover:underline">{post.useNickname}</p>
-              </Link>
+              <p
+                className="font-bold hover:underline hover:cursor-pointer"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  router.push(`/users/${post.userId}`);
+                }}
+              >
+                {post.useNickname}
+              </p>
               {/* TODO 日付 */}
               <p className="text-gray-500 ml-1">@{post.userId}・日付</p>
             </div>
@@ -234,7 +249,10 @@ const TimeLine: FC<Props> = ({ userProfile }) => {
           <div className="text-gray-500 pl-[45px] w-full flex items-center *:transition *:duration-300 justify-between">
             <button
               className="hover:text-blue-500 hover:bg-blue-100 p-2 rounded-full"
-              onClick={() => clickReply(index)}
+              onClick={(e) => {
+                e.stopPropagation();
+                clickReply(index);
+              }}
             >
               <ChatBubbleOutlineIcon />
             </button>

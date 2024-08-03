@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
 import "./globals.css";
+import AppProvider from "./provider/AppProvider";
 
 export const metadata: Metadata = {
   title: "Twitter",
@@ -14,7 +14,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ja">
-      <body className={"font-ibm"}>{children}</body>
+      <body className={"font-ibm"}>
+        <AppProvider>{children}</AppProvider>
+      </body>
     </html>
   );
 }

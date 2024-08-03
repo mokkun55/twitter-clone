@@ -8,15 +8,19 @@ import { CircularProgress } from "@mui/material";
 import Sidebar from "./components/Sidebar";
 import TimeLine from "./components/TimeLine";
 import TweetInput from "./components/TweetInput";
+import { useRecoilValue } from "recoil";
+import { loginUserProfile } from "./globalState";
 
 function Page() {
   const [user, loading] = useAuthState(auth);
-  const { userProfile, getUserProfile } = useLoginUser();
+  const { getUserProfile } = useLoginUser();
+  const userProfile = useRecoilValue(loginUserProfile);
   const [isTweet, setIsTweet] = useState<boolean>(false);
 
   useEffect(() => {
     // データ取得
-    getUserProfile();
+    !userProfile && getUserProfile();
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
 
@@ -32,19 +36,14 @@ function Page() {
   return (
     <>
       {/* inputモーダル */}
-      <TweetInput
-        isOpen={isTweet}
-        setIsOpen={setIsTweet}
-        userProfile={userProfile}
-      />
+      <TweetInput isOpen={isTweet} setIsOpen={setIsTweet} />
 
       <div className="flex justify-center ">
         <Sidebar
-          userProfile={userProfile}
           isTweet={isTweet}
           setIsTweet={setIsTweet}
         />
-        <TimeLine userProfile={userProfile} />
+        <TimeLine />
         <div className="w-[10%] lg:w-[40%]"></div>
       </div>
     </>

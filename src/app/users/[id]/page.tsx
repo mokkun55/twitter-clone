@@ -7,6 +7,7 @@ import { auth, db } from "../../../../firebase";
 import { useRouter } from "next/navigation";
 import { useAuthState } from "react-firebase-hooks/auth";
 import Image from "next/image";
+import { CircularProgress } from "@mui/material";
 
 type Props = {
   params: {
@@ -46,6 +47,15 @@ const Page = ({ params }: Props) => {
     getUserProfile();
   }, [id, user]);
 
+  if (!userProfile) {
+    return (
+      <div className="text-center flex flex-col h-[90vh] justify-center items-center">
+        <CircularProgress />
+        <p className="mt-4">loading...</p>
+      </div>
+    );
+  }
+
   return (
     <div className="flex flex-col items-center justify-center">
       <h1 className="text-2xl m-4 font-bold">{id}さんのプロフィール</h1>
@@ -59,7 +69,8 @@ const Page = ({ params }: Props) => {
       )}
       <div className="flex flex-col items-center justify-center">
         <Image
-          src={userProfile?.profileImg || ""}
+          src={userProfile?.profileImg || "/noImg.jpg"}
+          priority={false}
           width={100}
           height={100}
           alt="プロフィール画像"

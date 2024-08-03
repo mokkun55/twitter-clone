@@ -5,17 +5,17 @@ import HomeIcon from "@mui/icons-material/Home";
 import PersonIcon from "@mui/icons-material/Person";
 import LogoutIcon from "@mui/icons-material/Logout";
 import { useRouter } from "next/navigation";
-import { User } from "../Types/User";
 import { Edit } from "@mui/icons-material";
-import Image from "next/image";
+import { useRecoilValue } from "recoil";
+import { loginUserProfile } from "../globalState";
 
 type Props = {
-  userProfile: User;
   isTweet: boolean;
   setIsTweet: (value: boolean) => void;
 };
 
-const Sidebar: FC<Props> = ({ userProfile, isTweet, setIsTweet }) => {
+const Sidebar: FC<Props> = ({ isTweet, setIsTweet }) => {
+  const userProfile = useRecoilValue(loginUserProfile);
   const router = useRouter();
   return (
     <div className="h-screen w-[10%] lg:w-[40%] flex flex-col items-center lg:items-end lg:mr-10 justify-between sticky top-0">
@@ -31,7 +31,7 @@ const Sidebar: FC<Props> = ({ userProfile, isTweet, setIsTweet }) => {
         </li>
         <li>
           <button
-            onClick={() => router.push(`/users/${userProfile.userId}`)}
+            onClick={() => router.push(`/users/${userProfile?.userId}`)}
             className="flex items-center rounded-full hover:bg-gray-400/20 px-2"
           >
             <PersonIcon className="text-[50px] p-2" />
