@@ -178,7 +178,7 @@ const TimeLine: FC = () => {
                   className="bg-blue-500 text-white py-2 px-4 rounded-full ml-auto"
                   onClick={clickSendReply}
                 >
-                  ツイートする
+                  返信する
                 </button>
               </div>
             </div>
@@ -220,50 +220,49 @@ const TimeLine: FC = () => {
             <div className="pl-[55px] mt-[-20px]">
               <p>{post.postText}</p>
             </div>
+          </Link>
+          {/* アイコンたち */}
+          <div className="text-gray-500 pl-[45px] w-full flex items-center *:transition *:duration-300 justify-between">
+            <button
+              className="hover:text-blue-500 hover:bg-blue-100 p-2 rounded-full"
+              onClick={(e) => {
+                e.stopPropagation();
+                clickReply(index);
+              }}
+            >
+              <ChatBubbleOutlineIcon />
+            </button>
 
-            {/* アイコンたち */}
-            <div className="text-gray-500 pl-[45px] w-full flex items-center *:transition *:duration-300 justify-between">
+            <button
+              className="hover:text-green-500 hover:bg-green-100 p-2 rounded-full"
+              onClick={clickRetweet}
+            >
+              <RepeatIcon />
+            </button>
+
+            <button
+              className="hover:text-red-500 hover:bg-red-100 p-2 rounded-full"
+              onClick={clickLike}
+            >
+              <FavoriteBorderIcon />
+            </button>
+
+            <div className="*:transition *:duration-300">
               <button
                 className="hover:text-blue-500 hover:bg-blue-100 p-2 rounded-full"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  clickReply(index);
-                }}
+                onClick={clickBookmark}
               >
-                <ChatBubbleOutlineIcon />
+                <BookmarkBorderIcon />
               </button>
 
               <button
-                className="hover:text-green-500 hover:bg-green-100 p-2 rounded-full"
-                onClick={clickRetweet}
+                className="hover:text-blue-500 hover:bg-blue-100 p-2 rounded-full"
+                onClick={clickShare}
               >
-                <RepeatIcon />
+                <IosShareIcon />
               </button>
-
-              <button
-                className="hover:text-red-500 hover:bg-red-100 p-2 rounded-full"
-                onClick={clickLike}
-              >
-                <FavoriteBorderIcon />
-              </button>
-
-              <div className="*:transition *:duration-300">
-                <button
-                  className="hover:text-blue-500 hover:bg-blue-100 p-2 rounded-full"
-                  onClick={clickBookmark}
-                >
-                  <BookmarkBorderIcon />
-                </button>
-
-                <button
-                  className="hover:text-blue-500 hover:bg-blue-100 p-2 rounded-full"
-                  onClick={clickShare}
-                >
-                  <IosShareIcon />
-                </button>
-              </div>
             </div>
-          </Link>
+          </div>
         </div>
       ))}
       <button
