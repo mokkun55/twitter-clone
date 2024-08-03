@@ -23,14 +23,13 @@ type Props = {
   };
 };
 
-// TODO ここからやる
-
 const Page = ({ params }: Props) => {
   const postId = params.id;
   const router = useRouter();
   const [user] = useAuthState(auth);
 
   const [isTweet, setIsTweet] = useState<boolean>(true);
+  const [postText, setPostText] = useState<string>("");
 
   const userProfile = useRecoilValue(loginUserProfile);
   const { getUserProfile } = useLoginUser();
@@ -150,9 +149,9 @@ const Page = ({ params }: Props) => {
           <div className="mt-3 w-full h-fit ">
             <textarea
               className="resize-none outline-none w-full text-lg"
-              placeholder="いまどうしてる？"
-              // onChange={(e) => setPostText(e.target.value)}
-              // value={postText}
+              placeholder="返信をツイート"
+              onChange={(e) => setPostText(e.target.value)}
+              value={postText}
             ></textarea>
             <div className="flex">
               <button
