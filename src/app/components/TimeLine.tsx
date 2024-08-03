@@ -2,7 +2,6 @@ import React, { FC, use, useEffect, useState } from "react";
 import Image from "next/image";
 import TLHeader from "./TLHeader";
 import {
-  addDoc,
   collection,
   limit,
   onSnapshot,
@@ -23,7 +22,6 @@ import Link from "next/link";
 import { Modal } from "@mui/material";
 import { useRecoilValue } from "recoil";
 import { loginUserProfile } from "../globalState";
-import ReplyButtn from "./buttons/ReplyButtn";
 import useSendReply from "@/hooks/tweet/useSendReply";
 
 const TimeLine: FC = () => {
@@ -191,88 +189,84 @@ const TimeLine: FC = () => {
       {tweets.map((post, index) => (
         // TODO 詳細ページへのリンク
         <div
-          className="hover:bg-slate-50 border w-full p-4"
           key={post.id}
-          onClick={() => router.push(`/posts/${post.id}`)}
+          className="hover:bg-slate-50 border w-full px-4 py-3"
         >
-          <div className="flex items-start">
-            <Link href={`/users/${post.userId}`}>
-              <Image
-                src={post.userProfileImg || "/noImg.jpg"}
-                alt="profile"
-                width={50}
-                height={50}
-                // TODO hover時にカーソルをpointerにならない!!!!!!!!!!!!
-                className="rounded-full w-[50px] h-[50px] hover:opacity-80 hover:cursor-pointer"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  router.push(`/users/${post.userId}`);
-                }}
-              />
-            </Link>
+          <Link href={`/posts/${post.id}`}>
+            <div className="flex items-start">
+              <Link href={`/users/${post.userId}`}>
+                <Image
+                  src={post.userProfileImg || "/noImg.jpg"}
+                  alt="profile"
+                  width={50}
+                  height={50}
+                  className="rounded-full w-[50px] h-[50px] hover:opacity-80 hover:cursor-pointer"
+                />
+              </Link>
 
-            <div className="flex mt-1 ml-2">
-              <p
-                className="font-bold hover:underline hover:cursor-pointer"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  router.push(`/users/${post.userId}`);
-                }}
-              >
-                {post.useNickname}
-              </p>
-              {/* TODO 日付 */}
-              <p className="text-gray-500 ml-1">@{post.userId}・日付</p>
+              <div className="flex mt-1 ml-2">
+                <p
+                  className="font-bold hover:underline hover:cursor-pointer"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    router.push(`/users/${post.userId}`);
+                  }}
+                >
+                  {post.useNickname}
+                </p>
+                {/* TODO 日付 */}
+                <p className="text-gray-500 ml-1">@{post.userId}・日付</p>
+              </div>
             </div>
-          </div>
 
-          {/* 本文 */}
-          <div className="pl-[55px] mt-[-20px]">
-            <p>{post.postText}</p>
-          </div>
+            {/* 本文 */}
+            <div className="pl-[55px] mt-[-20px]">
+              <p>{post.postText}</p>
+            </div>
 
-          {/* アイコンたち */}
-          <div className="text-gray-500 pl-[45px] w-full flex items-center *:transition *:duration-300 justify-between">
-            <button
-              className="hover:text-blue-500 hover:bg-blue-100 p-2 rounded-full"
-              onClick={(e) => {
-                e.stopPropagation();
-                clickReply(index);
-              }}
-            >
-              <ChatBubbleOutlineIcon />
-            </button>
-
-            <button
-              className="hover:text-green-500 hover:bg-green-100 p-2 rounded-full"
-              onClick={clickRetweet}
-            >
-              <RepeatIcon />
-            </button>
-
-            <button
-              className="hover:text-red-500 hover:bg-red-100 p-2 rounded-full"
-              onClick={clickLike}
-            >
-              <FavoriteBorderIcon />
-            </button>
-
-            <div className="*:transition *:duration-300">
+            {/* アイコンたち */}
+            <div className="text-gray-500 pl-[45px] w-full flex items-center *:transition *:duration-300 justify-between">
               <button
                 className="hover:text-blue-500 hover:bg-blue-100 p-2 rounded-full"
-                onClick={clickBookmark}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  clickReply(index);
+                }}
               >
-                <BookmarkBorderIcon />
+                <ChatBubbleOutlineIcon />
               </button>
 
               <button
-                className="hover:text-blue-500 hover:bg-blue-100 p-2 rounded-full"
-                onClick={clickShare}
+                className="hover:text-green-500 hover:bg-green-100 p-2 rounded-full"
+                onClick={clickRetweet}
               >
-                <IosShareIcon />
+                <RepeatIcon />
               </button>
+
+              <button
+                className="hover:text-red-500 hover:bg-red-100 p-2 rounded-full"
+                onClick={clickLike}
+              >
+                <FavoriteBorderIcon />
+              </button>
+
+              <div className="*:transition *:duration-300">
+                <button
+                  className="hover:text-blue-500 hover:bg-blue-100 p-2 rounded-full"
+                  onClick={clickBookmark}
+                >
+                  <BookmarkBorderIcon />
+                </button>
+
+                <button
+                  className="hover:text-blue-500 hover:bg-blue-100 p-2 rounded-full"
+                  onClick={clickShare}
+                >
+                  <IosShareIcon />
+                </button>
+              </div>
             </div>
-          </div>
+          </Link>
         </div>
       ))}
       <button
