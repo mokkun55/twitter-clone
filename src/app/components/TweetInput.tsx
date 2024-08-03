@@ -80,7 +80,9 @@ const TweetInput: FC<Props> = ({ isOpen, setIsOpen }) => {
             ></textarea>
             <div className="flex">
               <button
-                className="bg-blue-500 text-white py-2 px-4 rounded-full ml-auto"
+                className={`bg-blue-500 text-white py-2 px-4 rounded-full ml-auto ${
+                  postText === "" && "opacity-50 pointer-events-none"
+                }`}
                 onClick={clickSendTweet}
               >
                 ツイートする
