@@ -120,7 +120,7 @@ const Page: React.FC = () => {
               placeholder="自己紹介"
               onChange={(e) => setBio(e.target.value)}
               value={bio}
-              className="rounded border border-gray-300 p-1 resize-none"
+              className="rounded border border-gray-300 p-1 resize-none w-full"
             ></textarea>
             <button
               type="submit"

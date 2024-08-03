@@ -7,7 +7,7 @@ import { auth, db } from "../../../firebase";
 import { GoogleAuthProvider, signInWithPopup, signOut } from "firebase/auth";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { useRouter } from "next/navigation";
-import { doc, getDoc, setDoc } from "firebase/firestore";
+import { doc, getDoc, setDoc, Timestamp } from "firebase/firestore";
 import { User } from "../Types/User";
 
 function Page() {
@@ -30,10 +30,14 @@ function Page() {
         router.push("/");
       } else {
         // 新規登録の場合
-        const newData: Pick<User, "nickName" | "profileImg" | "createdAt"> = {
+        const newData: Pick<
+          User,
+          "nickName" | "profileImg" | "createdAt" | "headerImg"
+        > = {
           nickName: displayName || "",
           profileImg: photoURL || "",
-          createdAt: new Date(),
+          headerImg: "",
+          createdAt: Timestamp.now(),
         };
         const userDocRef = doc(db, "users", uid);
         await setDoc(userDocRef, newData);
