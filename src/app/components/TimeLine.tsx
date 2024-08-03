@@ -24,11 +24,13 @@ import { Modal } from "@mui/material";
 import { useRecoilValue } from "recoil";
 import { loginUserProfile } from "../globalState";
 import ReplyButtn from "./buttons/ReplyButtn";
+import useSendReply from "@/hooks/tweet/useSendReply";
 
 const TimeLine: FC = () => {
   const router = useRouter();
 
   const userProfile = useRecoilValue(loginUserProfile);
+  const { sendReply } = useSendReply();
 
   // home ↔ all
   const [TLMode, setTLMode] = useState<string>("home");
@@ -84,35 +86,19 @@ const TimeLine: FC = () => {
 
   // ---アイコンたち---
 
-  // リプライ
+  // --リプライ
+  // リプライモーダルを開く
   const clickReply = (index: number) => {
     setReplyTweet(tweets[index]);
     setIsReplyOpen(true);
   };
 
+  // リプライを送信
   const clickSendReply = () => {
-    sendReply();
+    if (!replyTweet) return;
+    sendReply(replyTweet.id, replyText);
     setIsReplyOpen(false);
     setReplyText("");
-  };
-
-  const sendReply = async () => {
-    // TODO IDの取得方法
-    if (!replyTweet) return;
-    if (!userProfile) return;
-    const replyRef = collection(db, "posts", replyTweet.id, "reply");
-    const sendReplyData: Post = {
-      id: "", // TODO: どうかする
-      userId: userProfile.userId,
-      userProfileImg: userProfile.profileImg,
-      useNickname: userProfile.nickName,
-      postText: replyText,
-      // TODO: 画像投稿機能
-      createdAt: new Date(),
-      // TODO: いいね機能
-    };
-    await addDoc(replyRef, sendReplyData);
-    console.log("リプライしました");
   };
 
   // リツイート
