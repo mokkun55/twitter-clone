@@ -205,15 +205,12 @@ const TimeLine: FC = () => {
               </Link>
 
               <div className="flex mt-1 ml-2">
-                <p
+                <Link
+                  href={`/users/${post.userId}`}
                   className="font-bold hover:underline hover:cursor-pointer"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    router.push(`/users/${post.userId}`);
-                  }}
                 >
                   {post.useNickname}
-                </p>
+                </Link>
                 {/* TODO 日付 */}
                 <p className="text-gray-500 ml-1">@{post.userId}・日付</p>
               </div>
