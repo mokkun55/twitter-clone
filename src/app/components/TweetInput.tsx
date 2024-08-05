@@ -28,7 +28,7 @@ const TweetInput: FC<Props> = ({ isOpen, setIsOpen }) => {
         id: "", // TODO: どうかする
         userId: userProfile.userId,
         userProfileImg: userProfile.profileImg,
-        useNickname: userProfile.nickName,
+        userNickname: userProfile.nickName,
         postText: postText,
         // TODO: 画像投稿機能
         createdAt: new Date(),

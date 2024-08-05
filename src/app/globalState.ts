@@ -5,3 +5,8 @@ export const loginUserProfile = atom<User | null>({
   key: "loginUserProfile",
   default: null,
 });
+
+export const replyModalState = atom<boolean>({
+  key: "replyModalState",
+  default: false,
+});

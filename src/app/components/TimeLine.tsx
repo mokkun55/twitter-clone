@@ -1,4 +1,4 @@
-import React, { FC, use, useEffect, useState } from "react";
+import React, { FC, useEffect, useState } from "react";
 import Image from "next/image";
 import TLHeader from "./TLHeader";
 import {
@@ -23,6 +23,7 @@ import { Modal } from "@mui/material";
 import { useRecoilValue } from "recoil";
 import { loginUserProfile } from "../globalState";
 import useSendReply from "@/hooks/tweet/useSendReply";
+import Tweet from "./Tweet";
 
 const TimeLine: FC = () => {
   const router = useRouter();
@@ -57,7 +58,7 @@ const TimeLine: FC = () => {
   };
 
   // 次の10件を取得
-  const loadNextPosts = () => {
+  const loadNextTweets = () => {
     const lastPost = tweets[tweets.length - 1];
     const Ref = collection(db, "posts");
     const q = query(
@@ -142,7 +143,7 @@ const TimeLine: FC = () => {
                     height={50}
                     className="rounded-full w-[40px] h-[40px] mr-2"
                   />
-                  <p className="font-bold">{replyTweet?.useNickname}</p>
+                  <p className="font-bold">{replyTweet?.userNickname}</p>
                   <p className="text-gray-500 ml-1">
                     @{replyTweet?.userId}・日付
                     {/* TODO 日付 */}
@@ -187,87 +188,20 @@ const TimeLine: FC = () => {
       </Modal>
 
       {tweets.map((post, index) => (
-        // TODO 詳細ページへのリンク
-        <div
+        <Tweet
           key={post.id}
-          className="hover:bg-slate-50 border w-full px-4 py-3"
-        >
-          <Link href={`/posts/${post.id}`}>
-            <div className="flex items-start">
-              <Link href={`/users/${post.userId}`}>
-                <Image
-                  src={post.userProfileImg || "/noImg.jpg"}
-                  alt="profile"
-                  width={50}
-                  height={50}
-                  className="rounded-full w-[50px] h-[50px] hover:opacity-80 hover:cursor-pointer"
-                />
-              </Link>
-
-              <div className="flex mt-1 ml-2">
-                <Link
-                  href={`/users/${post.userId}`}
-                  className="font-bold hover:underline hover:cursor-pointer"
-                >
-                  {post.useNickname}
-                </Link>
-                {/* TODO 日付 */}
-                <p className="text-gray-500 ml-1">@{post.userId}・日付</p>
-              </div>
-            </div>
-
-            {/* 本文 */}
-            <div className="pl-[55px] mt-[-20px]">
-              <p>{post.postText}</p>
-            </div>
-          </Link>
-          {/* アイコンたち */}
-          <div className="text-gray-500 pl-[45px] w-full flex items-center *:transition *:duration-300 justify-between">
-            <button
-              className="hover:text-blue-500 hover:bg-blue-100 p-2 rounded-full"
-              onClick={(e) => {
-                e.stopPropagation();
-                clickReply(index);
-              }}
-            >
-              <ChatBubbleOutlineIcon />
-            </button>
-
-            <button
-              className="hover:text-green-500 hover:bg-green-100 p-2 rounded-full"
-              onClick={clickRetweet}
-            >
-              <RepeatIcon />
-            </button>
-
-            <button
-              className="hover:text-red-500 hover:bg-red-100 p-2 rounded-full"
-              onClick={clickLike}
-            >
-              <FavoriteBorderIcon />
-            </button>
-
-            <div className="*:transition *:duration-300">
-              <button
-                className="hover:text-blue-500 hover:bg-blue-100 p-2 rounded-full"
-                onClick={clickBookmark}
-              >
-                <BookmarkBorderIcon />
-              </button>
-
-              <button
-                className="hover:text-blue-500 hover:bg-blue-100 p-2 rounded-full"
-                onClick={clickShare}
-              >
-                <IosShareIcon />
-              </button>
-            </div>
-          </div>
-        </div>
+          index={index}
+          postId={post.id}
+          userId={post.userId}
+          userProfileImg={post.userProfileImg}
+          userNickname={post.userNickname}
+          createdAt={post.createdAt}
+          postText={post.postText}
+        />
       ))}
       <button
         className="hover:bg-slate-50 border w-full p-4 text-blue-500 text-center"
-        onClick={loadNextPosts}
+        onClick={loadNextTweets}
       >
         もっと見る (次の10件)
       </button>

@@ -2,10 +2,18 @@
 
 import React, { useEffect, useState } from "react";
 import { User } from "../../Types/User";
-import { collection, getDocs, query, where } from "firebase/firestore";
-import { auth, db } from "../../../../firebase";
+import {
+  collection,
+  getDocs,
+  limit,
+  onSnapshot,
+  orderBy,
+  query,
+  startAfter,
+  where,
+} from "firebase/firestore";
+import { db, auth } from "../../../../firebase";
 import { useRouter } from "next/navigation";
-import { useAuthState } from "react-firebase-hooks/auth";
 import Image from "next/image";
 import { CircularProgress } from "@mui/material";
 import Sidebar from "@/app/components/Sidebar";
@@ -15,6 +23,9 @@ import { loginUserProfile } from "@/app/globalState";
 import dayjs from "dayjs";
 import "dayjs/locale/ja";
 import Link from "next/link";
+import Tweet from "@/app/components/Tweet";
+import { Post } from "@/app/Types/Post";
+import { useAuthState } from "react-firebase-hooks/auth";
 dayjs.locale("ja");
 
 type Props = {
@@ -24,8 +35,8 @@ type Props = {
 };
 
 const Page = ({ params }: Props) => {
-  const [user] = useAuthState(auth);
   const { id: userId } = params;
+  const [user, loading] = useAuthState(auth);
   const router = useRouter();
   const [fetchedUserProfile, setFetchedUserProfile] = useState<User | null>(
     null
@@ -33,26 +44,78 @@ const Page = ({ params }: Props) => {
   const [isTweet, setIsTweet] = useState<boolean>(true);
   const userProfile = useRecoilValue(loginUserProfile);
   const [userNotFound, setUserNotFound] = useState<boolean>(false);
+  const [tweets, setTweets] = useState<Array<Post>>([]);
+
+  // ユーザープロフィール取得
+  const getUserProfile = async () => {
+    const userDocCollection = collection(db, "users");
+    const q = query(userDocCollection, where("userId", "==", userId));
+    const querySnapshot = await getDocs(q);
+    if (querySnapshot.empty) {
+      // TODO ユーザーがいないときの処理
+      console.log("ユーザーが存在しません");
+      setUserNotFound(true);
+      return;
+    }
+    // console.log(querySnapshot.docs[0].data().userId);
+    setFetchedUserProfile(querySnapshot.docs[0].data() as User);
+  };
+
+  // ユーザーのツイート取得
+  const getUserAllTweets = async () => {
+    console.log("getUserAllTweets");
+
+    const Ref = collection(db, "posts");
+    const q = query(
+      Ref,
+      where("userId", "==", userId),
+      orderBy("createdAt", "desc"),
+      limit(20)
+    );
+    onSnapshot(q, (snapshot) => {
+      setTweets(
+        snapshot.docs.map((doc) => {
+          const data = doc.data() as Post;
+          const id = doc.id;
+          return { ...data, id };
+        })
+      );
+    });
+  };
+
+  // 次の10件を取得
+  const loadNextTweets = () => {
+    const lastPost = tweets[tweets.length - 1];
+    const Ref = collection(db, "posts");
+    const q = query(
+      Ref,
+      where("userId", "==", userId),
+      orderBy("createdAt", "desc"),
+      startAfter(lastPost.createdAt),
+      limit(10)
+    );
+    onSnapshot(q, (snapshot) => {
+      setTweets((prevTweets) => [
+        ...prevTweets,
+        ...snapshot.docs.map((doc) => {
+          const data = doc.data() as Post;
+          const id = doc.id;
+          return { ...data, id };
+        }),
+      ]);
+    });
+  };
 
   useEffect(() => {
-    // ユーザープロフィール取得
-    const getUserProfile = async () => {
-      const userDocCollection = collection(db, "users");
-      const q = query(userDocCollection, where("userId", "==", userId));
-      const querySnapshot = await getDocs(q);
-      if (querySnapshot.empty) {
-        // TODO ユーザーがいないときの処理
-        console.log("ユーザーが存在しません");
-        setUserNotFound(true);
-        return;
-      }
-      console.log(querySnapshot.docs[0].data().userId);
-
-      setFetchedUserProfile(querySnapshot.docs[0].data() as User);
+    const fetchData = async () => {
+      await getUserProfile();
+      await getUserAllTweets();
     };
 
-    getUserProfile();
-  }, [userId, user]);
+    fetchData();
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [userId]);
 
   if (userNotFound) {
     return (
@@ -86,7 +149,7 @@ const Page = ({ params }: Props) => {
       {/* ここに書く */}
       <div className="w-[70%] border-x">
         {/* 上の方 */}
-        <div className="py-2 ">
+        <div className="py-2 sticky top-0 bg-white border-b">
           <div className="flex items-center px-4">
             <button
               onClick={router.back}
@@ -147,7 +210,7 @@ const Page = ({ params }: Props) => {
           </p>
 
           {/* フォロー数 */}
-          <div className="flex mt-4">
+          <div className="flex mt-4 pb-4 border-b">
             <div className="flex">
               <p className="font-bold">11</p>
               <p className="text-gray-500">フォロー中</p>
@@ -159,6 +222,32 @@ const Page = ({ params }: Props) => {
             </div>
           </div>
         </div>
+
+        {/* ツイート一覧 */}
+        <div>
+          {tweets.map((tweet, index) => (
+            <Tweet
+              key={tweet.id}
+              index={index}
+              postId={tweet.id}
+              userId={tweet.userId}
+              userProfileImg={fetchedUserProfile.profileImg}
+              userNickname={fetchedUserProfile.nickName}
+              postText={tweet.postText}
+              createdAt={tweet.createdAt}
+            />
+          ))}
+        </div>
+
+        {/* 次のX件を取得 */}
+        <button
+          className="hover:bg-slate-50 border w-full p-4 text-blue-500 text-center"
+          onClick={loadNextTweets}
+        >
+          もっと見る (次の10件)
+        </button>
+
+        {/* もっと見る */}
       </div>
 
       {/* スタイル埋め合わせ */}
