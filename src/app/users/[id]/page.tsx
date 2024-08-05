@@ -98,7 +98,7 @@ const Page = ({ params }: Props) => {
               <p className="font-bold text-xl ml-8">
                 {fetchedUserProfile.nickName}
               </p>
-              {/* TODO あとでやる */}
+              {/* TODO xx件のツイート あとでやる */}
               <p className="text-gray-500 text-sm ml-8">{"xx"}件のツイート</p>
             </div>
           </div>
@@ -126,7 +126,7 @@ const Page = ({ params }: Props) => {
             className="rounded-full"
           />
 
-          {/* TODO 自分のプロフィールなら表示 */}
+          {/* TODO **修正必要** 自分のプロフィールなら表示 */}
           {fetchedUserProfile.userId === userProfile?.userId && (
             <button className="border px-4 py-2 rounded-full bg-white font-bold h-fit mt-14 hover:bg-gray-200/40 transition duration-150">
               プロフィールを編集
@@ -136,7 +136,9 @@ const Page = ({ params }: Props) => {
 
         {/* ユーザー情報 */}
         <div className="mx-6">
-          <p className="font-bold text-xl">{fetchedUserProfile.nickName}</p>
+          <p className="font-bold text-xl mt-2">
+            {fetchedUserProfile.nickName}
+          </p>
           <p className="text-gray-500">@{fetchedUserProfile.userId}</p>
           <p className="mt-2">{fetchedUserProfile.bio}</p>
           <p className="text-gray-500">
